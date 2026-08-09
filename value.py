@@ -1,3 +1,6 @@
+import math
+
+
 class Value:
     def __init__(self, data, _children=(), _op="", label=""):
         self.data = data
@@ -17,10 +20,8 @@ class Value:
         out = Value(self.data * other.data, (self, other), "*")
         return out
 
-    def __subtract__(self, other):
-        out = Value(self.data - other.data, (self, other), "-")
-        return out
-
-    def __div__(self, other):
-        out = Value(self.data / other.data, (self, other), "/")
+    def tanh(self):
+        x = self.data
+        t = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
+        out = Value(t, (self,), "tanh")
         return out
