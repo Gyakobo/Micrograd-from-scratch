@@ -22,4 +22,4 @@ x = 3.0
 a = Value(2.0)
 b = Value(-3.0)
 
-print(a)
+print(a + 2)
