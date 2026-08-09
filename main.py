@@ -3,7 +3,7 @@ import math
 import numpy as np
 import matplotlib.pyplot as plt
 from value import *
-from diagraph import *
+from digraph import *
 
 
 def f(x):
