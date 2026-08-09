@@ -22,5 +22,6 @@ d.label = "d"
 
 f = Value(-2.0, label="f")
 L = d * f
+L.label = "L"
 
 visualize(draw_bot(L))

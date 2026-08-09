@@ -25,7 +25,9 @@ def draw_bot(root):
 
         # for any value in the graph, create a rectangular ('record') node for it
         dot.node(
-            name=uid, label="{ %s | data %.4f }" % (n.label, n.data), shape="record"
+            name=uid,
+            label="{ %s | data %.4f | grad %.4f}" % (n.label, n.data, n.grad),
+            shape="record",
         )
         if n._op:
             # if this value is a result of some operation, create an op node for it
