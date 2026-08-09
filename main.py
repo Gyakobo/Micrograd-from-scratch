@@ -1,25 +1,26 @@
+from calendar import c
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 from value import *
+from diagraph import *
 
 
 def f(x):
     return (3 * x**2) - (4 * x) + 5
 
 
-xs = np.arange(-5, 5, 0.25)
-ys = f(xs)
+a = Value(2.0, label="a")
+b = Value(-3.0, label="b")
+c = Value(1.0, label="c")
 
-"""
-plt.plot(xs, ys)
-plt.show()
-"""
+e = a * b
+e.label = "e"
 
-h = 0.001
-x = 3.0
+d = e + c
+d.label = "d"
 
-a = Value(2.0)
-b = Value(-3.0)
+f = Value(-2.0, label="f")
+L = d * f
 
-print(a + 2)
+visualize(draw_bot(L))
