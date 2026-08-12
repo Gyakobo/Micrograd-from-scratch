@@ -13,6 +13,9 @@ class Neuron:
         out = activation.tanh()
         return out
 
+    def parameters(self):
+        return self.w + [self.b]  # list + list = list
+
 
 class Layer:
     def __init__(
@@ -24,6 +27,9 @@ class Layer:
         outs = [n(x) for n in self.neurons]
         return outs[0] if len(outs) == 1 else outs  # for convenience
 
+    def parameters(self):
+        return [p for neuron in self.neurons for p in neuron.parameters()]
+
 
 class MLP:
     def __init__(self, nin, nouts):  # n of dimensions, list of nouts
@@ -34,3 +40,6 @@ class MLP:
         for layer in self.layers:
             x = layer(x)
         return x
+
+    def parameters(self):
+        return [p for layer in self.layers for p in layer.parameters()]
