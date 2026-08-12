@@ -67,3 +67,6 @@ loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
 print("loss:", loss)
 
 loss.backward()
+
+for p in n.parameters():
+    p.data += -0.01 * p.grad
