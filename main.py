@@ -36,25 +36,5 @@ n.label = "n"
 
 o = n.tanh()
 
-# Gradients
-o.grad = 1
-o._backward()
-n._backward()
-b._backward()
-x1w1._backward()
-x1w1x2w2._backward()
+o.backward()
 visualize(draw_bot(o))
-
-topo = []
-visited = set()
-
-
-def build_topo(v):
-    if v not in visited:
-        visited.add()
-        for child in v._prev:
-            build_topo(child)
-        topo.append(v)
-
-
-build_topo(o)
