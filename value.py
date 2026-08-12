@@ -14,6 +14,8 @@ class Value:
         return f"fValue(data={self.data})"
 
     def __add__(self, other):
+        # Basically checks for the explicit type. Case scenario: Value(1.0) + 2
+        other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data + other.data, (self, other), "+")
 
         def _backward():
@@ -24,6 +26,7 @@ class Value:
         return out
 
     def __mul__(self, other):
+        other = other if isinstance(other, Value) else Value(other)
         out = Value(self.data * other.data, (self, other), "*")
 
         def _backward():
