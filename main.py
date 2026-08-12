@@ -5,6 +5,9 @@ import matplotlib.pyplot as plt
 from value import *
 from digraph import *
 
+# Neuron imports
+from neuron import *
+
 
 def f(x):
     return (3 * x**2) - (4 * x) + 5
@@ -13,7 +16,7 @@ def f(x):
 # print((L2 - L1) / h)
 # visualize(draw_bot(L))
 
-
+"""
 # inputs x1, x2
 x1 = Value(2.0, label="x1")
 x2 = Value(0.0, label="x2")
@@ -41,5 +44,26 @@ o = (e - 1) / (e + 1)
 o.label = "o"
 # ------------
 
-o.backward()
-visualize(draw_bot(o))
+# o.backward()
+# visualize(draw_bot(o))
+"""
+
+x = [2.0, 3.0, -1.0]
+n = MLP(3, [4, 4, 1])
+print(n(x))
+# visualize(draw_bot(n(x)))
+
+xs = [
+    [2.0, 3.0, -1.0],
+    [3.0, -1.0, 0.5],
+    [0.5, 1.0, 1.0],
+    [1.0, 1.0, -1.0],
+]
+
+ys = [1.0, -1.0, -1.0, 1.0]  # desired targets
+ypred = [n(x) for x in xs]
+
+loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
+print("loss:", loss)
+
+loss.backward()
