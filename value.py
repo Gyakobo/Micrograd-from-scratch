@@ -50,13 +50,16 @@ class Value:
 
         return out
 
+    def __radd__(self, other):  # other + self
+        return self + other
+
     def __rmul__(self, other):  # other * self
         return self * other
 
     def __truediv__(self, other):  # self / other
         return self * other**-1
 
-    def __neg__(self, other):  # -self
+    def __neg__(self):  # -self
         return self * (-1)
 
     def __sub__(self, other):
