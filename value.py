@@ -39,13 +39,12 @@ class Value:
 
     def __pow__(self, other):
         assert isinstance(
-            other, (int, float), "only supporting int/float powers for now"
-        )
+            other, (int, float)
+        ), "only supporting int/float powers for now"
         out = Value(self.data**other, (self,), f"**{other}")
 
         def _backward():
-            self.grad += other.data * out.grad
-            other.grad += self.data * out.grad
+            self.grad += other * (self.data ** (other - 1)) * out.grad
 
         out._backward = _backward
 
@@ -55,7 +54,13 @@ class Value:
         return self * other
 
     def __truediv__(self, other):  # self / other
-        return self * other ** (-1)
+        return self * other**-1
+
+    def __neg__(self, other):  # -self
+        return self * (-1)
+
+    def __sub__(self, other):
+        return self + (-other)
 
     def tanh(self):
         x = self.data
