@@ -65,3 +65,5 @@ ypred = [n(x) for x in xs]
 
 loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
 print("loss:", loss)
+
+loss.backward()
