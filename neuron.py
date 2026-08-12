@@ -22,13 +22,13 @@ class Layer:
 
     def __call__(self, x):
         outs = [n(x) for n in self.neurons]
-        return outs
+        return outs[0] if len(outs) == 1 else outs  # for convenience
 
 
 class MLP:
     def __init__(self, nin, nouts):  # n of dimensions, list of nouts
         sz = [nin] + nouts
-        self.layers = [Layer(sz[i]) for i in range(len(nouts))]
+        self.layers = [Layer(sz[i], sz[i + 1]) for i in range(len(nouts))]
 
     def __call__(self, x):
         for layer in self.layers:
