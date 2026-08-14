@@ -61,12 +61,19 @@ xs = [
 ]
 
 ys = [1.0, -1.0, -1.0, 1.0]  # desired targets
-ypred = [n(x) for x in xs]
 
-loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
-print("loss:", loss)
+for k in range(20):
+    # forward pass
+    ypred = [n(x) for x in xs]
+    loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
 
-loss.backward()
+    # backward pass
+    for p in n.parameters():
+        p.grad = 0.0
+    loss.backward()
 
-for p in n.parameters():
-    p.data += -0.01 * p.grad
+    # update
+    for p in n.parameters():
+        p.data += -0.05 * p.grad
+
+    print(k, loss.data)
