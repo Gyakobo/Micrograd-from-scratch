@@ -8,9 +8,12 @@ from digraph import *
 # Neuron imports
 from neuron import *
 
+np.random.seed(1337)
+random.seed(1337)
 
-def f(x):
-    return (3 * x**2) - (4 * x) + 5
+# SKlearn
+# from sklearn.datasets import make_moons, make_blobs
+# x, y = make_moons(n_samples=100, noise=0.1)
 
 
 # print((L2 - L1) / h)
