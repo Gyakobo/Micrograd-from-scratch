@@ -7,7 +7,7 @@ class Value:
         self.grad = 0.0
         self._backward = lambda: None
         self._prev = set(_children)
-        self._op = _op
+        self._op = _op  # For graphviz operations
         self.label = label
 
     def __repr__(self):
