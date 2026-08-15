@@ -1,50 +1,9 @@
 import math
 import random
+import numpy as np
 
-
-class Neuron:
-    def __init__(self, nin):
-        self.w = [Value(random.uniform(-1, 1)) for _ in range(nin)]  # wi
-        self.b = Value(random.uniform(-1, 1))  # b
-
-    def __call__(self, x: list):
-        # wi * xi + b
-        activation = sum(wi * xi for (wi, xi) in zip(self.w, x)) + self.b
-        out = activation.tanh()
-        return out
-
-    def parameters(self):
-        return self.w + [self.b]
-
-
-class Layer:
-    def __init__(
-        self, nin, nout
-    ):  # n of dimensions(input per neuron), quantity of neurons in a single layer
-        self.neurons = [Neuron(nin) for _ in range(nout)]
-
-    def __call__(self, x):
-        outs = [n(x) for n in self.neurons]
-        return outs[0] if len(outs) == 1 else outs  # for convenience
-
-    def parameters(self):
-        return [p for neuron in self.neurons for p in neuron.parameters()]
-
-
-class MLP:
-    def __init__(
-        self, nin, nouts
-    ):  # n of dimensions(input per neuron), lists of nouts(quantity of neurons)
-        sz = [nin] + nouts
-        self.layers = [Layer(sz[i], sz[i + 1]) for i in range(len(nouts))]
-
-    def __call__(self, x):
-        for layer in self.layers:
-            x = layer(x)
-        return x
-
-    def parameters(self):
-        return [p for layer in self.layers for p in layer.parameters()]
+np.random.seed(1337)
+random.seed(1337)
 
 
 class Value:
@@ -62,7 +21,8 @@ class Value:
         self._backward = lambda: None
 
     def __repr__(self):
-        return f"fValue(data={self.data}, grad={self.grad}, op={self._op}, label={self.label})"
+        # return f"fValue(data={self.data}, grad={self.grad}, op={self._op}, label={self.label})"
+        return f"fValue(data={self.data})"
 
     def show_children(self):
         print(self._prev)
@@ -112,6 +72,9 @@ class Value:
     def __sub__(self, other):
         return self + (-other)
 
+    def __rsub__(self, other):
+        return self + (-other)
+
     def tanh(self):
         x = self.data
         t = (math.exp(2 * x) - 1) / (math.exp(2 * x) + 1)
@@ -151,21 +114,72 @@ class Value:
             node._backward()
 
 
-"""
-a = Value(1)
-a.label = "a"
+class Neuron:
+    def __init__(self, nin):
+        self.w = [Value(random.uniform(-1, 1)) for _ in range(nin)]  # wi
+        self.b = Value(random.uniform(-1, 1))  # b
 
-b = Value(2)
-b.label = "b"
+    def __call__(self, x: list):
+        # wi * xi + b
+        activation = sum(wi * xi for (wi, xi) in zip(self.w, x)) + self.b
+        out = activation.tanh()
+        return out
 
-c = Value(3)
-c.label = "c"
+    def parameters(self):
+        return self.w + [self.b]
 
-d = Value(4)
-d.label = "d"
 
-L = (a + b) * c + d
-L.label = "L"
+class Layer:
+    def __init__(
+        self, nin, nout
+    ):  # n of dimensions(input per neuron), quantity of neurons in a single layer
+        self.neurons = [Neuron(nin) for _ in range(nout)]
 
-L.backward()
-"""
+    def __call__(self, x):
+        outs = [n(x) for n in self.neurons]
+        return outs[0] if len(outs) == 1 else outs  # for convenience
+
+    def parameters(self):
+        return [p for neuron in self.neurons for p in neuron.parameters()]
+
+
+class MLP:
+    def __init__(
+        self, nin, nouts
+    ):  # n of dimensions(input per neuron), lists of nouts(sizes of all the layers in our MLP)
+        sz = [nin] + nouts  # [inputs per neuron], []
+        self.layers = [Layer(sz[i], sz[i + 1]) for i in range(len(nouts))]
+
+    def __call__(self, x):
+        for layer in self.layers:
+            x = layer(x)
+        return x
+
+    def parameters(self):
+        return [p for layer in self.layers for p in layer.parameters()]
+
+
+nn = MLP(3, [4, 4, 1])
+
+xs = [
+    [2, 3, -1],
+    [3, -1, 0.5],
+    [0.5, 1, 1],
+    [1, 1, -1],
+]
+ys = [1, -1, -1, 1]
+
+for _ in range(4):
+    # Forward pass
+    ypred = [nn(x) for x in xs]
+    loss = sum((yout - ygt) ** 2 for ygt, yout in zip(ys, ypred))
+    print("loss:", loss)
+
+    # Backward pass
+    loss.backward()
+
+    # Update
+    print(nn.layers[0].neurons[0].w[0].data)
+    for p in nn.parameters():
+        p.data += -0.01 * p.grad
+    print(nn.layers[0].neurons[0].w[0].data)
