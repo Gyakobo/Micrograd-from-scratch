@@ -1,4 +1,39 @@
 import math
+import random
+
+
+class Neuron:
+    def __init__(self, nin):
+        self.w = [Value(random.uniform(-1, 1)) for _ in range(nin)]  # wi
+        self.b = Value(random.uniform(-1, 1))  # b
+
+    def __call__(self, x: list):
+        # wi * xi + b
+        activation = sum(wi * xi for (wi, xi) in zip(self.w, x)) + self.b
+        out = activation.tanh()
+        return out
+
+    def parameters(self):
+        return self.w + [self.b]
+
+
+class Layer:
+    def __init__(
+        self, nin, nout
+    ):  # n of dimensions(input per neuron), quantity of neurons in a single layer
+        self.neurons = [Neuron(nin) for _ in range(nout)]
+
+    def __call__(self, x):
+        outs = [n(x) for n in self.neurons]
+        return outs[0] if len(outs) == 1 else outs  # for convenience
+
+    def parameters(self):
+        return [p for neuron in self.neurons for p in neuron.parameters()]
+
+
+class MLP:
+    def __init__(self, nin, nouts):  # n of dimensions, lists of nouts
+        sz = [nin] + nouts
 
 
 class Value:
@@ -105,6 +140,7 @@ class Value:
             node._backward()
 
 
+"""
 a = Value(1)
 a.label = "a"
 
@@ -121,3 +157,4 @@ L = (a + b) * c + d
 L.label = "L"
 
 L.backward()
+"""
